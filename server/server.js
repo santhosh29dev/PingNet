@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI).then(()=>{
-    console.log("mongo connected");
+    console.log("mongoDB connected");
     
 }).catch((err)=>{
     console.error(err);
@@ -30,7 +30,9 @@ io.on('connection' ,(socket)=>{
         
     });
 
-    socket.on('send_message',(data)=>{
+    socket.on('send_message',async (data)=>{
+        const newMessage = new Message(data);
+        await newMessage.save();
         socket.to(data.room).emit('recieve_message',data);
     });
 
